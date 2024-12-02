@@ -3,7 +3,7 @@
 #include "logica.h"
 
 char **criarSudoku(int dimensao, char elemento){
-    char **matriz = (char*)malloc(dimensao*sizeof(char));
+    char **matriz = (char**)malloc(dimensao*sizeof(char*));
     if(matriz == NULL){
         printf("Erro ao alocar memoria para as linhas da matriz\n");
         return NULL;

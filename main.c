@@ -8,7 +8,7 @@ int main(int argc, char *argv[]){
     char *arquivoConfiguracao = NULL;
     char *arquivoSolucao = NULL;
 
-    while((opt = getopt(argc, argv, "i:o:")) != 1){
+    while((opt = getopt(argc, argv, "i:o:")) != -1){
         switch (opt) {
         case 'i':
             arquivoConfiguracao = optarg;
@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
             arquivoSolucao = optarg;
             break;
         default:
-            printf("Use: ./<arquivoexecutavel> -k <arquivo configuracao> -c <arquivo solucao>\n");
+            printf("Use: ./<arquivoexecutavel> -i <arquivo configuracao> -o <arquivo solucao>\n");
             return 0;
         }
     }
