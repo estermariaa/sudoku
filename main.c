@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <getopt.h>
+#include "logica.h"
+#include "entradaSaida.h"
 
 int main(int argc, char *argv[]){
     int opt;
@@ -29,6 +31,8 @@ int main(int argc, char *argv[]){
         printf("O arquivo de solucao nao foi especificado.\n");
         return 0;
     }
+
+    leituraConfiguracao(arquivoConfiguracao);
 
     return 0;
 }
