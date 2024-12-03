@@ -2,6 +2,8 @@
 #define LOGICA_H
 
 char **criarSudoku(int dimensao, char elemento);
-void liberarSudoku(int dimensao, char **sudoku);
+void liberarSudoku(char **sudoku, int dimensao);
+void imprimirSudoku(char **matriz, int dimensao);
+
 
 #endif

@@ -23,11 +23,20 @@ char **criarSudoku(int dimensao, char elemento){
     return matriz;
 }
 
-void liberarSudoku(int dimensao, char **sudoku){
+void liberarSudoku(char **sudoku, int dimensao){
     for(int i=0; i<dimensao; i++){
         free(sudoku[i]);
     }
     free(sudoku);
+}
+
+void imprimirSudoku(char **matriz, int dimensao){
+    for(int i=0; i<dimensao; i++){
+        for(int j=0; j<dimensao; j++){
+            printf("%c ", matriz[i][j]);
+        }
+        printf("\n");
+    }
 }
 
 int verificaLinha(char **matriz, int linha, int coluna,int dimensao){
