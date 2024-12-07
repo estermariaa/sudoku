@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "logica.h"
 
 char **criarSudoku(int dimensao, char elemento){
@@ -56,6 +57,21 @@ int verificaColuna(char **matriz, int linha, int coluna,int dimensao){
         // mudar para comparar com char
         if(matriz[i][coluna] == elemento && i != coluna){
             return 0;
+        }
+    }
+    return 1;
+}
+
+int verificaQuadrante(char **matriz, int linha, int coluna, int dimensao){
+    int elemento = matriz[linha][coluna];
+    int dim = sqrt(dimensao);
+    int x0 = (linha/dim) * dim;
+    int y0 = (coluna/dim) * dim;
+    for(int i = 0; i<dim; i++){
+        for(int j = 0; j<dim; j++){
+            if(matriz[x0+i][y0+j] == elemento && (x0+i)!=linha && (y0+j)!=coluna){
+                return 0;
+            }
         }
     }
     return 1;
