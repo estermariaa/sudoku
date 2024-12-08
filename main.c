@@ -32,7 +32,13 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
-    leituraConfiguracao(arquivoConfiguracao);
+    int **sudoku = leituraConfiguracao(arquivoConfiguracao);
+    //separar as partes que calculam a dimensao e fazer uma função só pra isso
+
+    if(sudoku != NULL){
+        solucao(sudoku, 9);
+        imprimirSaida(sudoku, 9, arquivoSolucao);
+    }
 
     return 0;
 }
