@@ -37,6 +37,7 @@ int main(int argc, char *argv[]){
 
     if(sudoku != NULL){
         solucao(sudoku, 9);
+        imprimirSudoku(sudoku, 9);
         imprimirSaida(sudoku, 9, arquivoSolucao);
     }
 
