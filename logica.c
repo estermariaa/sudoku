@@ -79,7 +79,11 @@ int verificaQuadrante(int **matriz, int candidato, int linha, int coluna, int di
     return 1;
 }
 
+int resolvido = 0;
+
 void solucao(int **matriz, int dimensao){
+    if(resolvido) return;
+
     int vazio = 1;
     for(int x=0; x <dimensao; x++){
         for(int y=0; y < dimensao; y++){
@@ -88,19 +92,18 @@ void solucao(int **matriz, int dimensao){
                 for(int w=1; w <= dimensao; w++){
                     if(verificaLinha(matriz, w, x, dimensao) && verificaColuna(matriz, w, y, dimensao) && verificaQuadrante(matriz, w, x, y, dimensao)){
                         matriz[x][y] = w;
-                        //imprimirSudoku(matriz, dimensao);
                         solucao(matriz, dimensao);
+                        if(resolvido) return;
                         matriz[x][y] = -1;
                     }
                 }
 
-                break;
+                return;
             }
         }
-        if (!vazio) break;
     }
     if (vazio) {
-        //imprimirSudoku(matriz, dimensao);
-        return;
+        imprimirSudoku(matriz, dimensao);
+        resolvido = 1;
     }
 }

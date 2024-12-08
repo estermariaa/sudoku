@@ -39,6 +39,7 @@ int main(int argc, char *argv[]){
         solucao(sudoku, 9);
         imprimirSudoku(sudoku, 9);
         imprimirSaida(sudoku, 9, arquivoSolucao);
+        liberarSudoku(sudoku, 9);
     }
 
     return 0;

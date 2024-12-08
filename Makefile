@@ -22,5 +22,5 @@ clean:
 	rm -rf *.o $(EXEC)
 
 run: all
-	./$(EXEC) -i configuracao.txt -o solucao.txt
+	./$(EXEC) -i configuracao2.txt -o solucao2.txt
 
