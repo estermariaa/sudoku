@@ -36,11 +36,11 @@ int main(int argc, char *argv[]){
     //separar as partes que calculam a dimensao e fazer uma função só pra isso
 
     if(sudoku != NULL){
-        solucao(sudoku, 9);
-        imprimirSudoku(sudoku, 9);
-        imprimirSaida(sudoku, 9, arquivoSolucao);
-        liberarSudoku(sudoku, 9);
+        if(solucao2(sudoku, 9))
+            imprimirSudoku(sudoku, 9);
+            imprimirSaida(sudoku, 9, arquivoSolucao);
+            liberarSudoku(sudoku, 9);
     }
-
+    
     return 0;
 }

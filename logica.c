@@ -97,13 +97,45 @@ void solucao(int **matriz, int dimensao){
                         matriz[x][y] = -1;
                     }
                 }
-
                 return;
             }
         }
     }
     if (vazio) {
-        imprimirSudoku(matriz, dimensao);
+    imprimirSudoku(matriz, dimensao);
         resolvido = 1;
     }
+}
+
+int solucao2(int **sudoku, int dimensao){
+    int vazioEncontrado = 0;
+    int linha, coluna;
+
+    for(linha = 0; linha < dimensao; linha++){
+        for(coluna = 0; coluna < dimensao; coluna++){
+            if(sudoku[linha][coluna] == -1){
+                vazioEncontrado = 1;
+                break;
+            }
+        }
+        if (vazioEncontrado) break;
+    }
+
+    if(!vazioEncontrado){
+        return 1;
+    }
+
+    for(int i = 1;i <= dimensao; i++){
+        if(verificaLinha(sudoku, i, linha, dimensao) && verificaColuna(sudoku, i, coluna, dimensao) && verificaQuadrante(sudoku, i, linha, coluna, dimensao)){
+            sudoku[linha][coluna] = i;
+
+            if(solucao2(sudoku, dimensao)){
+                return 1;
+            }
+
+            sudoku[linha][coluna] = -1;
+        }
+    }
+
+    return 0;
 }

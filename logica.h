@@ -8,6 +8,7 @@ int verificaLinha(int **matriz, int candidato, int linha, int dimensao);
 int verificaColuna(int **matriz, int candidato, int coluna,int dimensao);
 int verificaQuadrante(int **matriz, int candidato, int linha, int coluna, int dimensao);
 void solucao(int **matriz, int dimensao);
+int solucao2(int **matriz, int dimensao);
 
 
 #endif
