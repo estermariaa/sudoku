@@ -1,7 +1,9 @@
 #ifndef ENTRADASAIDA_H
 #define ENTRADASAIDA_H
 
-int **leituraConfiguracao(char *arquivo);
+int linhaVazia(char *linha);
+int calcularDimensao(FILE *f);
+int **leituraConfiguracao(FILE *f, int dimensao);
 void imprimirSaida(int **sudoku, int dimensao, char *arquivo);
 
 

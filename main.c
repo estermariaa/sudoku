@@ -32,15 +32,39 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
-    int **sudoku = leituraConfiguracao(arquivoConfiguracao);
-    //separar as partes que calculam a dimensao e fazer uma função só pra isso
+    FILE *f = fopen(arquivoConfiguracao, "r"); 
+
+    int dimensao = calcularDimensao(f);
+    int **sudoku = leituraConfiguracao(f, dimensao);
 
     if(sudoku != NULL){
-        if(solucao2(sudoku, 9))
-            imprimirSudoku(sudoku, 9);
-            imprimirSaida(sudoku, 9, arquivoSolucao);
-            liberarSudoku(sudoku, 9);
+        if(solucao2(sudoku, dimensao)){
+            imprimirSudoku(sudoku, dimensao);
+            imprimirSaida(sudoku, dimensao, arquivoSolucao);
+            liberarSudoku(sudoku, dimensao);
+        }
     }
+
+    fclose(f);
     
+//vou arrumar ainda
+/*
+    FILE *f = fopen(leituraConfiguracao, "r");
+
+    while(!feof(f)){
+        int dimensao = calcularDimensao(f);
+        int **sudoku = leiturcaConfiguraco(f, dimensao);
+
+        if(sudoku != NULL){
+            if(solucao2(sudoku, dimensao)){
+                imprimirSudoku(sudoku, dimensao);
+                imprimirSaida(sudoku, dimensao, arquivoSolucao);
+                liberarSudoku(sudoku, dimensao);
+            }
+        }
+    }
+    fclose(f);
+*/
+
     return 0;
 }

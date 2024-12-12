@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "entradaSaida.h"
 #include "logica.h"
 
-int **leituraConfiguracao(char *arquivo){
-    FILE *f = fopen(arquivo, "r");
-    if(f == NULL){
-        printf("Erro ao abrir o arquivo de configuracao\n");
-        return 0;
+int linhaVazia(char *linha){
+    for(int i=0; linha[i] != '\0'; i++){
+        if(!isspace(linha[i])) return 0;
     }
+    return 1;
+}
 
+int calcularDimensao(FILE *f){
     int dimensao = 0;
     char linha[1000];
     while(fgets(linha, sizeof(linha), f)!= NULL){
@@ -20,7 +22,11 @@ int **leituraConfiguracao(char *arquivo){
     }
     dimensao = dimensao*dimensao;
 
-    rewind(f);
+    return dimensao;
+}
+
+int **leituraConfiguracao(FILE *f, int dimensao){
+    char linha[1000];
 
     int **matriz = criarSudoku(dimensao, -1);
     if(matriz == NULL){
@@ -47,8 +53,6 @@ int **leituraConfiguracao(char *arquivo){
         }
         linhaAtual++;
     }
-
-    fclose(f);
 
     return matriz;
 }
