@@ -31,29 +31,17 @@ int main(int argc, char *argv[]){
         printf("O arquivo de solucao nao foi especificado.\n");
         return 0;
     }
-
-    FILE *f = fopen(arquivoConfiguracao, "r"); 
-
-    int dimensao = calcularDimensao(f);
-    int **sudoku = leituraConfiguracao(f, dimensao);
-
-    if(sudoku != NULL){
-        if(solucao2(sudoku, dimensao)){
-            imprimirSudoku(sudoku, dimensao);
-            imprimirSaida(sudoku, dimensao, arquivoSolucao);
-            liberarSudoku(sudoku, dimensao);
-        }
-    }
-
-    fclose(f);
     
-//vou arrumar ainda
-/*
-    FILE *f = fopen(leituraConfiguracao, "r");
+    FILE *f = fopen(arquivoConfiguracao, "r");
+    int dimensao = calcularDimensao(f);
 
-    while(!feof(f)){
-        int dimensao = calcularDimensao(f);
-        int **sudoku = leiturcaConfiguraco(f, dimensao);
+
+    //ver ultima linha vazia
+    while(!feof(f)){        
+        int **sudoku = leituraConfiguracao(f,dimensao);
+        printf("\n");
+        imprimirSudoku(sudoku, dimensao);
+        printf("\n");
 
         if(sudoku != NULL){
             if(solucao2(sudoku, dimensao)){
@@ -62,9 +50,9 @@ int main(int argc, char *argv[]){
                 liberarSudoku(sudoku, dimensao);
             }
         }
-    }
-    fclose(f);
-*/
 
+    }
+
+    fclose(f);
     return 0;
 }

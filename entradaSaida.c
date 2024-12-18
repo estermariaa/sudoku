@@ -4,16 +4,20 @@
 #include "entradaSaida.h"
 #include "logica.h"
 
-int linhaVazia(char *linha){
-    for(int i=0; linha[i] != '\0'; i++){
-        if(!isspace(linha[i])) return 0;
+int linhaVazia(char *linha) {
+    for (int i = 0; linha[i] != '\0'; i++) {
+        if (linha[i] != ' ' && linha[i] != '\t' && linha[i] != '\n' && linha[i] != '\r') {
+            return 0; // Não é vazia
+        }
     }
-    return 1;
+    return 1; // É vazia
 }
 
 int calcularDimensao(FILE *f){
     int dimensao = 0;
     char linha[1000];
+    long posicaoInicial = ftell(f);
+
     while(fgets(linha, sizeof(linha), f)!= NULL){
         if(strspn(linha, " \t\n") == strlen(linha)){
             break;
@@ -22,6 +26,7 @@ int calcularDimensao(FILE *f){
     }
     dimensao = dimensao*dimensao;
 
+    fseek(f,posicaoInicial,SEEK_SET);
     return dimensao;
 }
 
@@ -32,26 +37,30 @@ int **leituraConfiguracao(FILE *f, int dimensao){
     if(matriz == NULL){
         fclose(f);
         return 0;
-    }
-
+    }    
     int linhaAtual = 0;
-    while(fgets(linha, sizeof(linha), f) != NULL){
-        if(strspn(linha, " \t\n") == strlen(linha)){
+    while(linhaAtual<dimensao && fgets(linha, sizeof(linha), f) != NULL){
+
+        if(linhaVazia(linha)){
             continue; //ignora as linhas vazias
         }
 
+        //printf("%s\n", linha);
+
+
         int colunaAtual = 0;
         for(int i=0; i<strlen(linha); i++){
-            if(linha[i] != ' ' && linha[i] != '\t' && linha[i] != '\n'){
+            if(linha[i] != ' ' && linha[i] != '\n'){
                 if(linha[i] == 'v'){
-                    matriz[linhaAtual][colunaAtual] = -1;
+                    matriz[linhaAtual][colunaAtual++] = -1;
                 }else{
-                    matriz[linhaAtual][colunaAtual] = linha[i] - '0';
+                    matriz[linhaAtual][colunaAtual++] = linha[i] - '0';
                 }
-                colunaAtual++;
             }
         }
-        linhaAtual++;
+        if(colunaAtual == dimensao){
+            linhaAtual++;
+        }
     }
 
     return matriz;

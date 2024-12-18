@@ -1,11 +1,24 @@
-vv1 8vv 3vv
-v49 716 v8v
-v2v v9v vvv
+5 3 v  v 7 v  v v v
+6 v v  1 9 5  v v v
+v 9 8  v v v  v 6 v
 
-vv4 vvv v2v
-v56 vv1 8vv
-v1v vvv 5v9
+8 v v  v 6 v  v v 3
+4 v v  8 v 3  v v 1
+7 v v  v 2 v  v v 6
 
-vvv vvv 43v
-vvv 16v vv8
-7vv vv2 vv1
+v 6 v  v v v  2 8 v
+v v v  4 1 9  v v 5
+v v v  v 8 v  v 7 9
+
+
+v 9 v  v v 2  v 1 v
+2 v 8  v 4 v  9 3 v
+7 v 3  1 v 6  8 v v
+
+v v v  3 v v  1 4 5
+1 8 5  v 2 9  6 v v
+v 7 4  v v 1  2 v 8
+
+v v v  2 v v  v 8 v
+5 v v  9 v v  7 6 2
+8 v v  6 v 3  v v v
