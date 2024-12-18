@@ -64,7 +64,7 @@ int verificaColuna(int **matriz, int candidato, int coluna,int dimensao){
 }
 
 int verificaQuadrante(int **matriz, int candidato, int linha, int coluna, int dimensao){
-    int elemento = matriz[linha][coluna];
+    //int elemento = matriz[linha][coluna];
     int dim = sqrt(dimensao);
     int x0 = (linha/dim) * dim;
     int y0 = (coluna/dim) * dim;
