@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "logica.h"
+#include "entradaSaida.h"
 
-int buscarPosMaisPreenchida(int matriz[9][9], int dimensao){
-    
+void buscarPosMaisPreenchida(int **matriz, int dimensao, int *melhorLinha, int *melhorColuna, int *quadranteLinha, int *quadranteColuna){
     int contagemLinha = 0,contagemColuna = 0;
     int posLinha, posColuna = 0;
-
 
     for(int i=0; i<dimensao;i++){
         int auxLinha = 0;
@@ -35,7 +35,6 @@ int buscarPosMaisPreenchida(int matriz[9][9], int dimensao){
     for (int x0 = 0; x0 < dimensao; x0 += dim) {
         for (int y0 = 0; y0 < dimensao; y0 += dim) {
             int preenchidos = 0;
-
             for (int k = 0; k <dimensao; k++) {
                 int i = k / dim;
                 int j = k % dim;
@@ -43,7 +42,6 @@ int buscarPosMaisPreenchida(int matriz[9][9], int dimensao){
                     preenchidos++;
                 }
             }
-
             if (preenchidos >= contagemMatriz) {
                 contagemMatriz = preenchidos;
                 posMatriz[0] = x0;
@@ -52,13 +50,122 @@ int buscarPosMaisPreenchida(int matriz[9][9], int dimensao){
             }
         }
     }
-    
-    
-    printf("%d %d (%d,%d)", posLinha, posColuna, posMatriz[0], posMatriz[1]);
+    *melhorLinha = posLinha;
+    *melhorColuna = posColuna;
+    *quadranteLinha = posMatriz[0];
+    *quadranteColuna = posMatriz[1];
+}
+
+int numeroValido(int **matriz, int linha, int coluna, int numero, int dimensao){
+    int dim = sqrt(dimensao);
+
+    for(int i=0; i<dimensao; i++){
+        if(matriz[linha][i] == numero) return 0;
+    }
+    for(int i=0; i<dimensao; i++){
+        if(matriz[i][coluna] == numero) return 0;
+    }
+
+    int x0 = (linha/dim) * dim;
+    int y0 = (coluna/dim) * dim;
+
+    for(int i = 0; i<dim; i++){
+        for(int j = 0; j<dim; j++){
+            if(matriz[x0+i][y0+j] == numero){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+void gerarCandidatos(int **matriz, int linha, int coluna, int candidatos[], int dimensao){
+    for(int i=1; i<=dimensao; i++){
+        if(numeroValido(matriz, linha, coluna, i, dimensao)){
+            candidatos[i-1] = i;
+        }else{
+            candidatos[i-1] = 0;
+        }
+    }
+}
+
+int buscarMelhorPosicao(int **matriz, int dimensao, int *melhorLinha, int *melhorColuna, int *quadranteLinha, int *quadranteColuna){
+    int dim = sqrt(dimensao);
+    int atualizou = 0;
+
+    for(int i=0; i<dimensao; i++){
+        if(matriz[*melhorLinha][i] == -1){
+            int candidatos[dimensao];
+            gerarCandidatos(matriz, *melhorLinha, i, candidatos, dimensao);
+
+            int numCandidatos = 0;
+            int unicoCandidato = -1;
+            for(int k=0; k <dimensao; k++){
+                if(candidatos[k] != 0){
+                    numCandidatos++;
+                    unicoCandidato = candidatos[k];
+                }
+            }
+            if(numCandidatos == 1){
+                matriz[*melhorLinha][i] = unicoCandidato;
+                atualizou = 1;
+            }
+        }
+    }
+    for (int i = 0; i < dimensao; i++) {
+        if (matriz[i][*melhorColuna] == -1) {
+            int candidatos[dimensao];
+            gerarCandidatos(matriz, i, *melhorColuna, candidatos, dimensao);
+
+            int numCandidatos = 0;
+            int unicoCandidato = -1;
+            for (int k = 0; k < dimensao; k++) {
+                if (candidatos[k] != 0) {
+                    numCandidatos++;
+                    unicoCandidato = candidatos[k];
+                }
+            }
+
+            if (numCandidatos == 1) {
+                matriz[i][*melhorColuna] = unicoCandidato;
+                atualizou = 1;
+            }
+        }
+    } 
+    for (int i = 0; i < dim; i++) {
+        for (int j = 0; j < dim; j++) {
+            int x = *quadranteLinha + i;
+            int y = *quadranteColuna + j;
+
+            if (matriz[x][y] == -1) {
+                int candidatos[dimensao];
+                gerarCandidatos(matriz, x, y, candidatos, dimensao);
+
+                int numCandidatos = 0;
+                int unicoCandidato = -1;
+                for (int k = 0; k < dimensao; k++) {
+                    if (candidatos[k] != 0) {
+                        numCandidatos++;
+                        unicoCandidato = candidatos[k];
+                    }
+                }
+
+                if (numCandidatos == 1) {
+                    matriz[x][y] = unicoCandidato;
+                    atualizou = 1;
+                }
+            }
+        }
+    }  
+    return atualizou;
 }
 
 int main(){
-    int matriz[9][9] = {
+    int dimensao = 9;
+
+    int **matriz = criarSudoku(dimensao, -1);
+
+    int valores[9][9] = {
         {5, 3, -1, -1, 7, -1, -1, -1, -1},
         {6, -1, -1, 1, 9, 5, -1, -1, -1},
         {-1, 9, 8, -1, -1, -1, -1, 6, -1},
@@ -70,6 +177,21 @@ int main(){
         {-1, -1, -1, -1, 8, -1, -1, 7, 9}
     };
 
-    buscarPosMaisPreenchida(matriz, 9);
+    for(int i=0; i<dimensao; i++){
+        for(int j=0; j<dimensao; j++){
+            matriz[i][j] = valores[i][j];
+        }
+    }
 
+    int melhorLinha, melhorColuna, quadranteLinha, quadranteColuna;
+
+    imprimirSudoku(matriz, dimensao);
+    buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+    buscarMelhorPosicao(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+    printf("\n");
+    imprimirSudoku(matriz, dimensao);
+    liberarSudoku(matriz, dimensao);
+
+
+    return 0;
 }
