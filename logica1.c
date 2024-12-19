@@ -184,10 +184,15 @@ int main(){
     }
 
     int melhorLinha, melhorColuna, quadranteLinha, quadranteColuna;
-
+    int atualizou;
+    
     imprimirSudoku(matriz, dimensao);
-    buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
-    buscarMelhorPosicao(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+
+    do{
+        buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+        atualizou = buscarMelhorPosicao(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+    } while(atualizou);
+    
     printf("\n");
     imprimirSudoku(matriz, dimensao);
     liberarSudoku(matriz, dimensao);
