@@ -160,22 +160,60 @@ int buscarMelhorPosicao(int **matriz, int dimensao, int *melhorLinha, int *melho
     return atualizou;
 }
 
+int *criarLista(int tamanho) {
+    int *lista = (int *)malloc(tamanho * sizeof(int));
+    if (lista == NULL) return NULL;
+    return lista;
+}
+
+void liberarLista(int *lista) { free(lista); }
+
+int buscaIndiceUnico(int **matriz, int dimensao){
+    int alterado = 0;
+
+    for(int i = 0; i < dimensao; i++){
+        for(int j = 0; j < dimensao; j++){
+            if(matriz[i][j] == -1){
+                int *valoresValidos = criarLista(dimensao);
+                int tamanahoLista = 0;
+
+                for(int w=1; w <= dimensao; w++){
+                    if(verificaLinha(matriz, w, i, dimensao) && verificaColuna(matriz, w, j, dimensao) && verificaQuadrante(matriz, w, i, j, dimensao)){
+                        valoresValidos[tamanahoLista] = w;
+                        tamanahoLista++;
+                    }
+
+                }
+                if(tamanahoLista == 1){
+                    matriz[i][j] = valoresValidos[0];
+                    printf("preencheu um valor!\n");
+                    alterado = 1;
+                }
+
+                liberarLista(valoresValidos);
+            }
+        }
+    }
+    return alterado;
+}
+
 int main(){
     int dimensao = 9;
 
     int **matriz = criarSudoku(dimensao, -1);
 
     int valores[9][9] = {
-        {5, 3, -1, -1, 7, -1, -1, -1, -1},
-        {6, -1, -1, 1, 9, 5, -1, -1, -1},
-        {-1, 9, 8, -1, -1, -1, -1, 6, -1},
-        {8, -1, -1, -1, 6, -1, -1, -1, 3},
-        {4, -1, -1, 8, -1, 3, -1, -1, 1},
-        {7, -1, -1, -1, 2, -1, -1, -1, 6},
-        {-1, 6, -1, -1, -1, -1, 2, 8, -1},
-        {-1, -1, -1, 4, 1, 9, -1, -1, 5},
-        {-1, -1, -1, -1, 8, -1, -1, 7, 9}
+        {4, -1, -1, 8, -1, -1, 3, -1, -1},
+        {-1, -1, 3, -1, -1, 1, -1, 8, -1},
+        {-1, -1, -1, -1, 2, -1, -1, -1, 9},
+        {7, -1, -1, -1, 6, -1, -1, -1, -1},
+        {-1, 1, -1, -1, 9, -1, -1, 2, -1},
+        {-1, -1, -1, -1, 1, -1, -1, -1, 7},
+        {9, -1, -1, -1, 5, -1, -1, -1, -1},
+        {-1, 4, -1, 2, -1, -1, 8, -1, -1},
+        {-1, -1, 8, -1, -1, 4, -1, -1, 5}
     };
+
 
     for(int i=0; i<dimensao; i++){
         for(int j=0; j<dimensao; j++){
@@ -188,15 +226,22 @@ int main(){
     
     imprimirSudoku(matriz, dimensao);
 
-    do{
-        buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
-        atualizou = buscarMelhorPosicao(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
-    } while(atualizou);
+    //do{
+    //    buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+    //    atualizou = buscarMelhorPosicao(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
+    //} while(atualizou);
     
-    printf("\n");
-    imprimirSudoku(matriz, dimensao);
-    liberarSudoku(matriz, dimensao);
+    //printf("\n");
+    //imprimirSudoku(matriz, dimensao);
+    //liberarSudoku(matriz, dimensao);
 
+    int alterado;
+    do {
+        alterado = buscaIndiceUnico(matriz, dimensao);
+        printf("oi\n");
+    } while (alterado);
+
+    imprimirSudoku(matriz, dimensao);
 
     return 0;
 }
