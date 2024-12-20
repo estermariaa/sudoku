@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "logica.h"
+#include "forcaBruta.h"
 
 int **criarSudoku(int dimensao, int elemento){
     int **matriz = (int**)malloc(dimensao*sizeof(int*));

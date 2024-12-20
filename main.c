@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <getopt.h>
-#include "logica.h"
+#include "forcaBruta.h"
 #include "entradaSaida.h"
 
 int main(int argc, char *argv[]){

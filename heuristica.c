@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "logica.h"
+#include "forcaBruta.h"
 #include "entradaSaida.h"
 
+/*
 void buscarPosMaisPreenchida(int **matriz, int dimensao, int *melhorLinha, int *melhorColuna, int *quadranteLinha, int *quadranteColuna){
     int contagemLinha = 0,contagemColuna = 0;
     int posLinha, posColuna = 0;
@@ -159,15 +160,22 @@ int buscarMelhorPosicao(int **matriz, int dimensao, int *melhorLinha, int *melho
     }  
     return atualizou;
 }
+*/
+
+typedef struct {
+    int linha;
+    int coluna;
+    int possibilidades;
+} Celula;
 
 int *criarLista(int tamanho) {
     int *lista = (int *)malloc(tamanho * sizeof(int));
     if (lista == NULL) return NULL;
     return lista;
 }
-
 void liberarLista(int *lista) { free(lista); }
 
+// SOLUCAO CELULAS UNICAS
 int buscaIndiceUnico(int **matriz, int dimensao){
     int alterado = 0;
 
@@ -197,21 +205,148 @@ int buscaIndiceUnico(int **matriz, int dimensao){
     return alterado;
 }
 
+// ====================================================================================
+
+// solucao com MRV
+
+Celula buscaCelula(int **matriz, int dimensao){
+    Celula melhorCelula = {-1, -1, dimensao + 1};
+
+    for(int i = 0; i < dimensao; i++){
+        for(int j = 0; j < dimensao; j++){
+            if(matriz[i][j] == -1){
+                int possibilidades = 0;
+
+                for(int num=1; num <= dimensao; num++){
+                    if(verificaLinha(matriz, num, i, dimensao) && verificaColuna(matriz, num, j, dimensao) && verificaQuadrante(matriz, num, i, j, dimensao)){
+                        possibilidades++;
+                    }
+
+                }
+
+                if(possibilidades < melhorCelula.possibilidades){
+                    melhorCelula.linha = i;
+                    melhorCelula.coluna = j;
+                    melhorCelula.possibilidades = possibilidades;
+                }
+                
+
+            }
+        }
+    }
+
+    return melhorCelula;
+}
+
+int solucao3(int **matriz, int dimensao) {
+    Celula celula = buscaCelula(matriz, dimensao);
+
+    if (celula.linha == -1) return 1;
+        
+    for (int num = 1; num <= dimensao; num++) {
+        if (verificaLinha(matriz, num, celula.linha, dimensao) && verificaColuna(matriz, num, celula.coluna, dimensao) && verificaQuadrante(matriz, num, celula.linha, celula.coluna, dimensao)) {
+            matriz[celula.linha][celula.coluna] = num;
+
+
+            if (solucao3(matriz, dimensao)) {
+                return 1;
+            }
+            //printf("errou!\n");
+            matriz[celula.linha][celula.coluna] = -1;
+            
+        }
+
+    }
+
+    return 0;
+}
+
+// ====================================================================================
+
+// SOLUCAO COM LCV
+
+int contarRestricoes(int** matriz, int linha, int coluna, int numero, int dimensao) {
+    int restricoes = 0;
+
+    for (int coluna = 0; coluna < dimensao; coluna++) {
+        if (matriz[linha][coluna] == -1) {
+            if(verificaLinha(matriz, numero, linha, dimensao) && verificaColuna(matriz, numero, coluna, dimensao) && verificaQuadrante(matriz, numero, linha, coluna, dimensao)){
+                restricoes++;
+            }
+        }
+    }
+
+    for (int linha = 0; linha < dimensao; linha++) {
+        if (matriz[linha][coluna] == -1) {
+            if(verificaLinha(matriz, numero, linha, dimensao) && verificaColuna(matriz, numero, coluna, dimensao) && verificaQuadrante(matriz, numero, linha, coluna, dimensao)){
+                restricoes++;
+            }
+        }
+    }
+
+    int dim = sqrt(dimensao);
+    int x0 = (linha / dim) * dim;
+    int y0 = (coluna / dim) * dim;
+    for (int i = 0; i < dim; i++) {
+        for (int j = 0; j < dim; j++) {
+            if (matriz[x0 + i][y0 + j] == -1) {
+                if(verificaLinha(matriz, numero, x0 + i, dimensao) && verificaColuna(matriz, numero, y0 + j, dimensao) && verificaQuadrante(matriz, numero, x0 + i, y0 + j, dimensao)){
+                    restricoes++;
+                }
+            }
+        }
+    }
+
+    return restricoes;
+}
+
+int escolherValorLCV(int** matriz, int linha, int coluna, int dimensao) {
+    int melhorValor = -1;
+    int minRestricoes = dimensao + 1; // Um valor maior que o possível número de restrições
+
+    for (int numero = 1; numero <= dimensao; numero++) {
+        if (verificaLinha(matriz, numero, linha, dimensao) && verificaColuna(matriz, numero, coluna, dimensao) && verificaQuadrante(matriz, numero, linha, coluna, dimensao)) {
+            int restricoes = contarRestricoes(matriz, linha, coluna, numero, dimensao);
+            if (restricoes < minRestricoes) {
+                minRestricoes = restricoes;
+                melhorValor = numero;
+            }
+        }
+    }
+    return melhorValor;
+}
+
+int solucaoComLCV(int** matriz, int dimensao) {
+    Celula celula = buscaCelula(matriz, dimensao); // Sua função buscaCelula (MRV)
+    if (celula.linha == -1) return 1; // Sudoku resolvido
+
+    int valor = escolherValorLCV(matriz, celula.linha, celula.coluna, dimensao);
+
+    if (valor != -1) {
+        matriz[celula.linha][celula.coluna] = valor;
+        if (solucaoComLCV(matriz, dimensao)) return 1;
+        matriz[celula.linha][celula.coluna] = -1; // Backtracking
+    }
+    return 0;
+}
+
+// ====================================================================================
+
 int main(){
     int dimensao = 9;
 
     int **matriz = criarSudoku(dimensao, -1);
 
     int valores[9][9] = {
-        {4, -1, -1, 8, -1, -1, 3, -1, -1},
-        {-1, -1, 3, -1, -1, 1, -1, 8, -1},
-        {-1, -1, -1, -1, 2, -1, -1, -1, 9},
-        {7, -1, -1, -1, 6, -1, -1, -1, -1},
-        {-1, 1, -1, -1, 9, -1, -1, 2, -1},
-        {-1, -1, -1, -1, 1, -1, -1, -1, 7},
-        {9, -1, -1, -1, 5, -1, -1, -1, -1},
-        {-1, 4, -1, 2, -1, -1, 8, -1, -1},
-        {-1, -1, 8, -1, -1, 4, -1, -1, 5}
+        {5, -1, -1, -1, 7, -1, -1, -1, -1},
+        {-1, 3, -1, 9, -1, -1, -1, 1, 5},
+        {7, -1, -1, -1, 5, 6, -1, -1, -1},
+        {6, -1, 8, 7, -1, -1, -1, -1, 3},
+        {-1, 9, -1, -1, 8, 4, -1, -1, 7},
+        {3, -1, -1, -1, -1, 9, 4, -1, 6},
+        {-1, -1, 7, 6, 3, -1, -1, -1, 9},
+        {-1, 8, -1, -1, -1, -1, 9, 6, -1},
+        {9, -1, -1, 3, -1, -1, -1, 4, 8}
     };
 
 
@@ -224,7 +359,7 @@ int main(){
     int melhorLinha, melhorColuna, quadranteLinha, quadranteColuna;
     int atualizou;
     
-    imprimirSudoku(matriz, dimensao);
+    //imprimirSudoku(matriz, dimensao);
 
     //do{
     //    buscarPosMaisPreenchida(matriz, dimensao, &melhorLinha, &melhorColuna, &quadranteLinha, &quadranteColuna);
@@ -235,11 +370,20 @@ int main(){
     //imprimirSudoku(matriz, dimensao);
     //liberarSudoku(matriz, dimensao);
 
+    
+    int contador = 0;
     int alterado;
     do {
         alterado = buscaIndiceUnico(matriz, dimensao);
-        printf("oi\n");
+        contador++;
     } while (alterado);
+    
+    //solucao3(matriz, dimensao);
+    //solucaoComLCV(matriz,dimensao);
+
+    
+      
+    //printf("%d\n", contador);
 
     imprimirSudoku(matriz, dimensao);
 

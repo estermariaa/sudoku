@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "entradaSaida.h"
-#include "logica.h"
+#include "forcaBruta.h"
 
 int linhaVazia(char *linha) {
     for (int i = 0; linha[i] != '\0'; i++) {
